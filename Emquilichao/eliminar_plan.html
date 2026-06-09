@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Plan Diario - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #003087;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 220px 2rem 2rem;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .plans-list {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        .plan-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plan-info {
+            flex-grow: 1;
+        }
+
+        .plan-date {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        .plan-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .no-plans {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Empresa">
+    </div>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <div class="menu-item" id="nombreUsuario"></div>
+                <ul class="submenu">
+                    <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="form-container">
+        
+        <h2>Eliminar Plan Diario</h2>
+        
+        <div class="form-group">
+            <label for="fechaBuscar">Buscar planes por fecha:</label>
+            <input type="date" id="fechaBuscar" name="fechaBuscar">
+            <button type="button" onclick="buscarPlanes()" class="btn-secondary" style="margin-top: 0.5rem;">Buscar Planes</button>
+        </div>
+
+        <div id="planesEncontrados" class="plans-list" style="display: none;">
+            <h3>Planes encontrados:</h3>
+            <div id="listaPlanesContainer"></div>
+        </div>
+
+        <div class="form-group" style="margin-top: 2rem;">
+            <label for="fechaEliminar">O eliminar todos los planes de una fecha específica:</label>
+            <input type="date" id="fechaEliminar" name="fechaEliminar" required>
+            <button type="button" onclick="eliminarTodosLosPlanesDeUnaFecha()" style="margin-top: 0.5rem;">Eliminar Todos los Planes de esta Fecha</button>
+        </div>
+    </div>
+
+    <script>
+        // Verificar sesión al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('procesar/verificar_sesion.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.autenticado) {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    document.getElementById('nombreUsuario').textContent = data.nombre || 'Usuario';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.location.href = 'index.html';
+                });
+        });
+
+        // Funcionalidad del menú
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const submenu = this.nextElementSibling;
+                    if (submenu && submenu.classList.contains('submenu')) {
+                        submenu.classList.toggle('active');
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+        });
+        // Función para buscar planes por fecha
+        async function buscarPlanes() {
+            const fecha = document.getElementById('fechaBuscar').value;
+            
+            if (!fecha) {
+                alert('Por favor, seleccione una fecha');
+                return;
+            }
+
+            try {
+                const response = await fetch('procesar/buscar_planes.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fecha: fecha })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    mostrarPlanes(result.planes);
+                } else {
+                    alert('Error al buscar planes: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al buscar planes');
+            }
+        }
+
+        // Función para mostrar los planes encontrados
+        function mostrarPlanes(planes) {
+            const container = document.getElementById('planesEncontrados');
+            const listaContainer = document.getElementById('listaPlanesContainer');
+            
+            if (planes.length === 0) {
+                listaContainer.innerHTML = '<div class="no-plans">No se encontraron planes para esta fecha</div>';
+            } else {
+                listaContainer.innerHTML = '';
+                
+                planes.forEach((plan, index) => {
+                    const planDiv = document.createElement('div');
+                    planDiv.className = 'plan-item';
+                    
+                    planDiv.innerHTML = `
+                        <div class="plan-info">
+                            <div class="plan-date">Fecha: ${plan.ActFecha}</div>
+                            <div class="plan-details">
+                                <strong>Dirección:</strong> ${plan.ActDireccion || 'No especificada'}<br>
+                                <strong>Actividad:</strong> ${plan.ActNombre || 'No especificada'}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="eliminarPlan(${plan.ActId})">Eliminar</button>
+                    `;
+                    
+                    listaContainer.appendChild(planDiv);
+                });
+            }
+            
+            container.style.display = 'block';
+        }
+
+        // Función para eliminar un plan específico
+        async function eliminarPlan(planId) {
+            if (!confirm('¿Está seguro de que desea eliminar este plan?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('procesar/eliminar_plan_diario.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ planId: planId })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Plan eliminado exitosamente');
+                    // Recargar la búsqueda
+                    buscarPlanes();
+                } else {
+                    alert('Error al eliminar el plan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar el plan');
+            }
+        }
+
+        // Función para eliminar todos los planes de una fecha
+        async function eliminarTodosLosPlanesDeUnaFecha() {
+            const fecha = document.getElementById('fechaEliminar').value;
+            
+            if (!fecha) {
+                alert('Por favor, seleccione una fecha');
+                return;
+            }
+
+            if (!confirm(`¿Está seguro de que desea eliminar TODOS los planes de la fecha ${fecha}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('procesar/eliminar_plan_diario.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fecha: fecha, eliminarTodos: true })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Todos los planes de la fecha han sido eliminados exitosamente');
+                    document.getElementById('fechaEliminar').value = '';
+                    document.getElementById('planesEncontrados').style.display = 'none';
+                } else {
+                    alert('Error al eliminar los planes: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar los planes');
+            }
+        }
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            fetch('procesar/cerrar_sesion.php')
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.location.href = 'index.html';
+                });
+        }
+    </script>
+</body>
+</html>

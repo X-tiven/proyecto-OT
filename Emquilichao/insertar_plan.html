@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertar Plan Diario - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+         .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem 100px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 60px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }   
+
+        body {
+            padding-top: 200px;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            transform: translateX(100px);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            color: #003087;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8DC63F;
+            box-shadow: 0 0 0 3px rgba(141, 198, 63, 0.2);
+        }
+
+        .submit-btn {
+            background: #8DC63F;
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #7ab32e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+
+     <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <div class="menu-item" id="nombreUsuario"></div>
+                <ul class="submenu">
+                    <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                 <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="form-card">
+            <h2>Insertar Plan Diario</h2>
+            
+            <form id="planForm" onsubmit="guardarPlan(event)">
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" name="direccion" placeholder="Ingrese la dirección..." required maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="actividades">Descripción de Actividades</label>
+                    <div id="actividades-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+                        <!-- Las actividades se cargarán aquí dinámicamente -->
+                    </div>
+                    <small style="color: #666; font-size: 0.9em;">Seleccione una o más actividades</small>
+                </div>
+                <div class="form-group">
+                    <label for="trabajadores">Personal Asignado</label>
+                    <div id="trabajadores-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+                        <!-- Los trabajadores se cargarán aquí dinámicamente -->
+                    </div>
+                    <small style="color: #666; font-size: 0.9em;">Seleccione uno o más trabajadores</small>
+                </div>
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <input type="text" id="observaciones" name="observaciones" placeholder="Observaciones adicionales..." maxlength="150">
+                </div>
+                <button type="submit" class="submit-btn">Agregar Actividad</button>
+            </form>
+            
+            <!-- Sección para mostrar actividades guardadas - MOVIDA DEBAJO DEL BOTÓN -->
+            <div id="actividades-guardadas" style="margin-top: 2rem; display: none;">
+                <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Actividades del Plan</h3>
+                <div id="lista-actividades" style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 1rem; max-height: 300px; overflow-y: auto;">
+                    <!-- Las actividades se mostrarán aquí -->
+                </div>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <button type="button" id="btn-finalizar" class="submit-btn" onclick="finalizarPlan()" style="background-color: #28a745;">Finalizar y Ver Plan Completo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    console.log('=== INICIANDO INSERTAR PLAN ===');
+    
+    // Variables globales
+    let actividadesPlan = [];
+    let fechaPlan = '';
+    let trabajadoresDisponibles = [];
+
+    // Función para cargar actividades disponibles
+    function cargarActividades() {
+        console.log('Cargando actividades...');
+        fetch('procesar/obtener_actividades_disponibles.php')
+            .then(response => {
+                console.log('Respuesta recibida:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Actividades recibidas:', data);
+                const container = document.getElementById('actividades-container');
+                
+                if (data && data.length > 0) {
+                    container.innerHTML = '';
+                    data.forEach(actividad => {
+                        const div = document.createElement('div');
+                        div.style.marginBottom = '8px';
+                        div.innerHTML = `
+                            <label style="display: flex; align-items: center; justify-content: flex-start; cursor: pointer; padding: 5px; border-radius: 3px; transition: background-color 0.2s;">
+                                <input type="checkbox" name="actividades[]" value="${actividad.descripcion}" style="margin-right: 8px;">
+                                <span style="text-align: left; flex: 1;">${actividad.descripcion}</span>
+                            </label>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML = '<p style="color: #666; font-style: italic;">No hay actividades disponibles</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar actividades:', error);
+                document.getElementById('actividades-container').innerHTML = '<p style="color: #ff0000;">Error al cargar actividades</p>';
+            });
+    }
+    
+    // Función para cargar trabajadores
+    function cargarTrabajadores() {
+        console.log('Cargando trabajadores...');
+        fetch('procesar/obtener_trabajadores.php')
+            .then(response => {
+                console.log('Respuesta recibida:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Datos recibidos:', data);
+                
+                // Verificar si es un array
+                if (Array.isArray(data)) {
+                    trabajadoresDisponibles = data;
+                    mostrarTrabajadores(data);
+                } else {
+                    console.error('Formato de datos incorrecto:', data);
+                    document.getElementById('trabajadores-container').innerHTML = '<p style="color: red;">Error: Formato de datos incorrecto</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar trabajadores:', error);
+                document.getElementById('trabajadores-container').innerHTML = '<p style="color: red;">Error al cargar trabajadores: ' + error.message + '</p>';
+            });
+    }
+    
+    // Función para mostrar trabajadores como checkboxes
+    function mostrarTrabajadores(trabajadores) {
+        const container = document.getElementById('trabajadores-container');
+        
+        if (!trabajadores || trabajadores.length === 0) {
+            container.innerHTML = '<p style="color: #666;">No hay trabajadores disponibles</p>';
+            return;
+        }
+        
+        let html = '';
+        trabajadores.forEach(trabajador => {
+            html += `
+                <div style="margin-bottom: 8px; padding: 5px; border-radius: 4px; background-color: white;">
+                    <label style="display: flex; align-items: center; justify-content: flex-start; cursor: pointer; font-weight: normal;">
+                        <input type="checkbox" name="trabajador_seleccionado" value="${trabajador.nombre}" 
+                               style="margin-right: 8px; transform: scale(1.2);">
+                        <span style="color: #333; text-align: left;">${trabajador.nombre}</span>
+                    </label>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        console.log('Trabajadores mostrados en el DOM');
+    }
+    
+    // Función para obtener trabajadores seleccionados
+    function obtenerTrabajadoresSeleccionados() {
+        const checkboxes = document.querySelectorAll('input[name="trabajador_seleccionado"]:checked');
+        const seleccionados = Array.from(checkboxes).map(cb => cb.value);
+        console.log('Trabajadores seleccionados:', seleccionados);
+        return seleccionados;
+    }
+    
+    // Función para guardar actividad
+    function guardarPlan(event) {
+        event.preventDefault();
+        console.log('=== GUARDANDO ACTIVIDAD ===');
+        
+        const fecha = document.getElementById('fecha').value;
+        const direccion = document.getElementById('direccion').value;
+        const observaciones = document.getElementById('observaciones').value;
+        const trabajadoresSeleccionados = obtenerTrabajadoresSeleccionados();
+
+        // Obtener actividades seleccionadas
+        const actividadesSeleccionadas = [];
+        document.querySelectorAll('input[name="actividades[]"]:checked').forEach(checkbox => {
+            actividadesSeleccionadas.push(checkbox.value);
+        });
+        
+        if (actividadesSeleccionadas.length === 0) {
+            alert('Debe seleccionar al menos una actividad');
+            return;
+        }
+        
+        const descripcionActividades = actividadesSeleccionadas.join(', ');
+        
+        console.log('Datos del formulario:', {
+            fecha, direccion, descripcionActividades, observaciones, trabajadoresSeleccionados
+        });
+        
+        if (!fecha || !direccion) {
+            alert('Por favor complete todos los campos obligatorios');
+            return;
+        }
+        
+        if (trabajadoresSeleccionados.length === 0) {
+            alert('Debe seleccionar al menos un trabajador');
+            return;
+        }
+        
+        // Guardar fecha del plan
+        fechaPlan = fecha;
+        
+        // Crear objeto de actividad
+        const actividad = {
+            fecha: fecha,
+            direccion: direccion,
+            descripcion: descripcionActividades,
+            observaciones: observaciones,
+            trabajadores: trabajadoresSeleccionados
+        };
+        
+        // Agregar a la lista
+        actividadesPlan.push(actividad);
+        console.log('Actividad agregada. Total actividades:', actividadesPlan.length);
+        console.log('Array completo de actividades:', actividadesPlan);
+        
+        // Mostrar actividades guardadas
+        mostrarActividadesGuardadas();
+        
+        // Limpiar formulario
+        document.getElementById('planForm').reset();
+        
+        // Desmarcar checkboxes
+        document.querySelectorAll('input[name="trabajador_seleccionado"]').forEach(cb => {
+            cb.checked = false;
+        });
+        
+        alert('Actividad agregada correctamente');
+    }
+    
+    // Función para mostrar actividades guardadas
+    function mostrarActividadesGuardadas() {
+        const container = document.getElementById('actividades-guardadas');
+        const lista = document.getElementById('lista-actividades');
+        
+        if (actividadesPlan.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.style.display = 'block';
+        
+        let html = '';
+        actividadesPlan.forEach((actividad, index) => {
+            html += `
+                <div style="background: white; margin-bottom: 10px; padding: 15px; border-radius: 8px; border-left: 4px solid #8DC63F;">
+                    <h4 style="color: #2c5aa0; margin-bottom: 8px;">Actividad ${index + 1}</h4>
+                    <p><strong>Fecha:</strong> ${actividad.fecha}</p>
+                    <p><strong>Dirección:</strong> ${actividad.direccion}</p>
+                    <p><strong>Descripción:</strong> ${actividad.descripcion}</p>
+                    <p><strong>Trabajadores:</strong> ${actividad.trabajadores.join(', ')}</p>
+                    ${actividad.observaciones ? `<p><strong>Observaciones:</strong> ${actividad.observaciones}</p>` : ''}
+                </div>
+            `;
+        });
+        
+        lista.innerHTML = html;
+    }
+    
+    // Función para finalizar plan
+    function finalizarPlan() {
+        if (actividadesPlan.length === 0) {
+            alert('Debe agregar al menos una actividad antes de finalizar');
+            return;
+        }
+        
+        if (confirm(`¿Finalizar plan con ${actividadesPlan.length} actividad(es)?`)) {
+            // Primero guardar las actividades en la base de datos
+            fetch('procesar/procesar_actividades_plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    actividades: actividadesPlan
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    
+                    // Redirigir solo con la fecha; los datos se cargarán desde la BD
+                    const parametros = new URLSearchParams();
+                    parametros.set('fecha', fechaPlan);
+                    const urlCompleta = `plan_diario_alcantarillado.html?${parametros.toString()}`;
+                    window.location.href = urlCompleta;
+                } else {
+                    alert('Error al guardar actividades: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al guardar actividades: ' + error.message);
+            });
+        }
+    }
+    
+    // Función para cerrar sesión
+    function cerrarSesion() {
+        fetch('procesar/cerrar_sesion.php')
+            .then(() => window.location.href = 'index.html')
+            .catch(() => window.location.href = 'index.html');
+    }
+    
+    // Función para toggle del menú
+    function toggleLogoutSection() {
+        const logoutSection = document.getElementById('logout-section');
+        const triangle = document.getElementById('triangle-icon');
+        
+        if (logoutSection.style.display === 'block') {
+            logoutSection.style.display = 'none';
+            triangle.textContent = '▲';
+        } else {
+            logoutSection.style.display = 'block';
+            triangle.textContent = '▼';
+        }
+    }
+    
+    // Cuando la página se carga
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== PÁGINA INSERTAR PLAN CARGADA ===');
+        
+        cargarTrabajadores();
+        cargarActividades();
+        
+        // Verificar sesión
+        fetch('procesar/verificar_sesion.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.autenticado) {
+                    console.log('Usuario no autenticado');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('Usuario autenticado:', data.nombre);
+                    const nombreUsuario = document.getElementById('nombreUsuario');
+                    if (nombreUsuario) {
+                        nombreUsuario.textContent = data.nombre;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error de sesión:', error);
+                window.location.href = 'index.html';
+            });
+        
+        // Configurar menús
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const submenu = this.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    this.classList.toggle('active');
+                }
+            });
+        });
+        
+        console.log('=== INICIALIZACIÓN COMPLETADA ===');
+    });
+    
+    console.log('=== SCRIPT INSERTAR PLAN CARGADO ===');
+    </script>
+</body>
+</html>

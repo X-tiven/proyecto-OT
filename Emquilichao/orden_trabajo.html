@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orden de Trabajo - Alcantarillado</title>
+    <style>
+        .print-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #8DC63F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .print-btn:hover {
+            background-color: #7ab32e;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background-color: white !important;
+            }
+
+            .top-bar, .header-logos, .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+                background: white !important;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                border: none;
+                background-color: white !important;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            * {
+                background-color: white !important;
+                background: white !important;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #003087;
+            min-height: 100vh;
+            padding-left: 220px;
+            padding-top: 200px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border: 2px solid #000;
+            margin-left: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border: 2px solid #000;
+            margin-left: 20px;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #000;
+        }
+
+        .header {
+            display: flex;
+            border-bottom: 2px solid #000;
+        }
+
+        .logo-section {
+            width: 25%;
+            padding: 10px;
+            border-right: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .logo-section img {
+            max-width: 45%;
+            height: auto;
+            max-height: 50px;
+        }
+        .title-section {
+            width: 55%;
+            padding: 10px;
+            text-align: center;
+            border-right: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title-section h1 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .title-section h2 {
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .code-section {
+            width: 20%;
+            padding: 10px;
+            font-size: 11px;
+        }
+
+        .form-row {
+            display: flex;
+            border-bottom: 1px solid #000;
+            min-height: 30px;
+        }
+
+        .form-field {
+            padding: 6px;
+            border-right: 1px solid #000;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-field:last-child {
+            border-right: none;
+        }
+
+        .form-field label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .form-field input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            font-size: 11px;
+        }
+
+        .description-section {
+            border-bottom: 1px solid #000;
+            padding: 6px;
+            min-height: 40px;
+        }
+
+        .description-section label {
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .description-section textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            resize: none;
+            height: 25px;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .equipment-section {
+            display: flex;
+            border-bottom: 1px solid #000;
+            min-height: 60px;
+        }
+
+        .equipment-left {
+            width: 70%;
+            padding: 6px;
+            border-right: 1px solid #000;
+        }
+
+        .equipment-right {
+            width: 30%;
+            padding: 6px;
+        }
+
+        .equipment-left label,
+        .equipment-right label {
+            font-weight: bold;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .equipment-left textarea,
+        .equipment-right textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            resize: none;
+            font-size: 11px;
+        }
+
+        .time-section {
+            display: flex;
+            border-bottom: 1px solid #000;
+            min-height: 30px;
+        }
+
+        .time-field {
+            flex: 1;
+            padding: 6px;
+            border-right: 1px solid #000;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+        }
+
+        .time-field:last-child {
+            border-right: none;
+        }
+
+        .time-field label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .time-field input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            font-size: 11px;
+        }
+
+        .materials-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 1px solid #000;
+        }
+
+        .materials-table th,
+        .materials-table td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+            font-size: 11px;
+            height: 25px;
+        }
+
+        .materials-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .materials-table input {
+            border: none;
+            width: 100%;
+            text-align: center;
+            background: transparent;
+            font-size: 11px;
+        }
+
+        .activities-section {
+            border-bottom: 1px solid #000;
+        }
+
+        .activities-header {
+            background-color: #f0f0f0;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            border-bottom: 1px solid #000;
+        }
+
+        .activities-subheader {
+            background-color: #f0f0f0;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            border-bottom: 1px solid #000;
+        }
+
+        .activities-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activities-table td {
+            border: 1px solid #000;
+            padding: 6px;
+            font-size: 10px;
+            vertical-align: top;
+            height: 25px;
+        }
+
+        .activity-left {
+            width: 33.33%;
+        }
+
+        .activity-middle {
+            width: 33.33%;
+        }
+
+        .activity-right {
+            width: 33.33%;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+                padding-left: 0;
+            }
+            
+            .top-bar, .header-logos, .sidebar {
+                display: none;
+            }
+            
+            .container {
+                max-width: none;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>EMPRESA DE SERVICIOS PÚBLICOS DE QUILICHAO</div>
+        <div>Sistema de Gestión</div>
+    </div>
+
+    <!-- Header Logos -->
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo 1">
+        <img src="imagenes/parte superior.png" alt="Logo 2">
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <div class="menu-item" id="nombreUsuario"></div>
+                <ul class="submenu">
+                    <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+                <img src="imagenes/Captura de pantalla 2025-07-29 105324.png" alt="Certificaciones ISO">
+            </div>
+            <div class="title-section">
+                <h1>ALCANTARILLADO</h1>
+                <h2>FORMATO DE ORDEN DE TRABAJO PARA ACTIVIDADES OPERATIVAS</h2>
+                <h2>ALCANTARILLADO</h2>
+            </div>
+            <div class="code-section">
+                <div><strong>Código:</strong> FO AL 01</div>
+                <div><strong>Versión:</strong> 1.0</div>
+                <div><strong>Emisión:</strong> 23/05/2024</div>
+            </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="form-row">
+            <div class="form-field" style="width: 25%;">
+                <label>ORDEN DE TRABAJO N°</label>
+                <input type="text" id="ordenTrabajo">
+            </div>
+            <div class="form-field" style="width: 25%;">
+                <label>FECHA</label>
+                <input type="date" id="fecha">
+            </div>
+            <div class="form-field" style="width: 50%;">
+                <label>NOMBRE DEL USUARIO</label>
+                <input type="text" id="nombreUsuario">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-field" style="width: 25%;">
+                <label>CÓDIGO DEL USUARIO</label>
+                <input type="text" id="codigoUsuario">
+            </div>
+            <div class="form-field" style="width: 25%;">
+                <label>TELÉFONO</label>
+                <input type="text" id="telefono">
+            </div>
+            <div class="form-field" style="width: 50%;">
+                <label>DIRECCIÓN</label>
+                <input type="text" id="direccion">
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="description-section">
+            <label>DESCRIPCIÓN DE LA ACTIVIDAD</label>
+            <textarea id="descripcionActividad"></textarea>
+        </div>
+
+        <!-- Equipment and Hours -->
+        <div class="equipment-section">
+            <div class="equipment-left">
+                <label>EQUIPO UTILIZADO</label>
+                <textarea style="height: 20px;" id="equipoUtilizado"></textarea>
+            </div>
+            <div class="equipment-right">
+                <label>HORAS DE UTILIZACIÓN</label>
+                <textarea style="height: 20px;" id="horasUtilizacion"></textarea>
+            </div>
+        </div>
+        
+        <!-- Una sola línea horizontal que separa todo -->
+        <hr style="margin: 8px 0; border: none; border-top: 1px solid #000; width: 100%;">
+        
+        <div class="equipment-section">
+            <div class="equipment-left">
+                <label>FUNCIONARIOS RESPONSABLES</label>
+                <textarea style="height: 20px;" id="funcionariosResponsables"></textarea>
+            </div>
+            <div class="equipment-right">
+                <!-- Espacio vacío -->
+            </div>
+        </div>
+
+        <!-- Time Section -->
+        <div class="time-section">
+            <div class="time-field">
+                <label>HORA INICIO</label>
+                <input type="time" id="horaInicio">
+            </div>
+            <div class="time-field">
+                <label>HORA FINAL</label>
+                <input type="time" id="horaFinal">
+            </div>
+            <div class="time-field">
+                <label>TOTAL HORAS</label>
+                <input type="text" id="totalHoras" readonly>
+            </div>
+        </div>
+
+        <!-- Materials Table -->
+        <table class="materials-table">
+            <thead>
+                <tr>
+                    <th colspan="6">MATERIALES UTILIZADOS</th>
+                </tr>
+                <tr>
+                    <th>DESCRIPCIÓN</th>
+                    <th>CANT</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>CANT</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>CANT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                </tr>
+                <tr>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                </tr>
+                <tr>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                    <td><input type="text"></td>
+                    <td><input type="number"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Activities Section -->
+        <div class="activities-section">
+            <div class="activities-header">ACTIVIDADES</div>
+            <div class="activities-subheader">ÁREA ALCANTARILLADO</div>
+            
+            <table class="activities-table">
+                <tr>
+                    <td class="activity-left">CORTE DE HIERRO BROCALES</td>
+                    <td class="activity-middle">ELABORACIÓN DE TAPAS DE RECAMARA</td>
+                    <td class="activity-right">REVISIÓN DE REDES DE ALCANTARILLADO ZONA URBANA</td>
+                </tr>
+                <tr>
+                    <td class="activity-left">CORTE DE HIERRO TAPAS DE SUMIDERO</td>
+                    <td class="activity-middle">ELABORACIÓN DE TAPAS DE SUMIDERO</td>
+                    <td class="activity-right">LIMPIEZA DE DESCARGAS</td>
+                </tr>
+                <tr>
+                    <td class="activity-left">CORTE DE HIERRO TAPAS RECAMARA</td>
+                    <td class="activity-middle">EFECTUAR ARIQUES EN REDES DE ALCANTARILLADO</td>
+                    <td class="activity-right">SONDEO DE TUBERÍAS DE ALCANTARILLADO Y LIMPIEZA DE CÁMARAS</td>
+                </tr>
+                <tr>
+                    <td class="activity-left">REVISIÓN DOMICILIARIA ALCANTARILLADO</td>
+                    <td class="activity-middle">INSTALAR TUBERÍA</td>
+                    <td class="activity-right">ROMPER ASFALTO O CONCRETO</td>
+                </tr>
+                <tr>
+                    <td class="activity-left">REPOSICIÓN DE REDES DE ALCANTARILLADO</td>
+                    <td class="activity-middle">RESELLO DE VÍAS</td>
+                    <td class="activity-right">OTRO</td>
+                </tr>
+                <tr>
+                    <td class="activity-left">METROS LINEALES SONDEADOS</td>
+                    <td class="activity-middle">DIÁMETRO TUBERÍA</td>
+                    <td class="activity-right"></td>
+                </tr>
+            </table>
+            </table>
+            <button class="print-btn" onclick="window.print()">Imprimir Formato</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para calcular total de horas
+        function calcularTotal() {
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFin = document.getElementById('horaFin').value;
+            
+            if (horaInicio && horaFin) {
+                const inicio = new Date('1970-01-01T' + horaInicio + ':00');
+                const fin = new Date('1970-01-01T' + horaFin + ':00');
+                const diferencia = fin - inicio;
+                const horas = diferencia / (1000 * 60 * 60);
+                
+                if (horas > 0) {
+                    document.getElementById('totalHoras').value = horas.toFixed(1);
+                }
+            }
+        }
+
+        // Función para obtener parámetros de URL
+        function obtenerParametroURL(nombre) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(nombre);
+        }
+
+        // Función para convertir fecha de YYYY-MM-DD a DD/MM/YYYY
+        function convertirFecha(fecha) {
+            if (fecha && fecha.includes('-')) {
+                const partes = fecha.split('-');
+                if (partes.length === 3) {
+                    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+            }
+            return fecha;
+        }
+
+        // Establecer fecha actual
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Iniciando orden de trabajo...');
+            
+            // Obtener parámetros de URL
+            const params = new URLSearchParams(window.location.search);
+            const fecha = params.get('fecha');
+            const descripcion = params.get('descripcion');
+            const direccion = params.get('direccion');
+            const trabajadores = params.get('trabajadores');
+            
+            console.log('📋 Parámetros recibidos:', { fecha, descripcion, direccion, trabajadores });
+            
+            // Establecer fecha
+            if (fecha) {
+                document.getElementById('fecha').value = fecha;
+                console.log('📅 Fecha establecida:', fecha);
+            }
+            
+            // Establecer dirección
+            if (direccion) {
+                document.getElementById('direccion').value = decodeURIComponent(direccion);
+                console.log('📍 Dirección establecida:', decodeURIComponent(direccion));
+            }
+            
+            // Establecer descripción de actividad
+            if (descripcion) {
+                document.getElementById('descripcionActividad').value = decodeURIComponent(descripcion);
+                console.log('📝 Descripción establecida:', decodeURIComponent(descripcion));
+            }
+            
+            // Establecer funcionarios responsables
+            if (trabajadores) {
+                const trabajadoresDecodificados = decodeURIComponent(trabajadores);
+                document.getElementById('funcionariosResponsables').value = trabajadoresDecodificados;
+                console.log('👥 Trabajadores establecidos:', trabajadoresDecodificados);
+            }
+            
+            // Verificar sesión y cargar nombre de usuario
+            fetch('procesar/verificar_sesion.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.autenticado) {
+                        window.location.href = 'index.html';
+                    } else {
+                        document.getElementById('nombreUsuario').textContent = data.nombre;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    if (error.message === 'No autenticado') {
+                        window.location.href = 'index.html';
+                    }
+                });
+        });
+
+        // Funcionalidad de menús desplegables
+        document.querySelectorAll('.menu-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                this.classList.toggle('active');
+                this.nextElementSibling.classList.toggle('active');
+            });
+        });
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            fetch('procesar/cerrar_sesion.php')
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch(() => {
+                    window.location.href = 'index.html';
+                });
+        }
+    </script>
+</body>
+</html>
+
+       

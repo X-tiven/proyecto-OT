@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        body {
+            padding-top: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .registro-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .registro-card h2 {
+            color: #003087;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8DC63F;
+            box-shadow: 0 0 0 3px rgba(141, 198, 63, 0.2);
+        }
+
+        .submit-btn {
+            background: #8DC63F;
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #7ab32e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-logos {
+                padding: 1rem;
+            }
+
+            .header-logos img {
+                height: 80px;
+            }
+
+            .container {
+                padding: 200px 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="container">
+        <div class="registro-card">
+            <h2>Registro de Usuario</h2>
+            <form id="registroForm" onsubmit="registrarUsuario(event)">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" placeholder="Ingrese su apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="usuario">Nombre de Usuario</label>
+                    <input type="text" id="usuario" name="usuario" placeholder="Elija un nombre de usuario" required>
+                </div>
+                <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="Ingrese su contraseña" required>
+                </div>
+                <button type="submit" class="submit-btn">Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function registrarUsuario(event) {
+        event.preventDefault();
+        
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const usuario = document.getElementById('usuario').value;
+        const contrasena = document.getElementById('contrasena').value;
+    
+        // Validaciones del lado del cliente
+        if (!nombre || !apellido || !usuario || !contrasena) {
+            alert('Todos los campos son obligatorios');
+            return;
+        }
+    
+        if (contrasena.length < 6) {
+            alert('La contraseña debe tener al menos 6 caracteres');
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('apellido', apellido);
+        formData.append('usuario', usuario);
+        formData.append('contrasena', contrasena);
+    
+        fetch('procesar/procesar_registro.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Usuario registrado exitosamente');
+                document.getElementById('registroForm').reset();
+                window.location.href = 'inicio.html';
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al procesar la solicitud');
+        });
+    }
+    </script>
+</body>
+</html>

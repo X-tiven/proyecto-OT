@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertar Actividad - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        body {
+            padding-top: 200px;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-left: calc(200px + ((100% - 200px - 800px) / 2));
+            padding: 2rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            color: #003087;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8DC63F;
+            box-shadow: 0 0 0 3px rgba(141, 198, 63, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #8DC63F, #7ab32e);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #7ab32e, #6a9e28);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(141, 198, 63, 0.3);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <div class="menu-item" id="nombreUsuario"></div>
+                <ul class="submenu">
+                    <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="form-card">
+            <h2>Insertar Actividad</h2>
+            <div id="mensaje"></div>
+            <form id="actividadForm" onsubmit="insertarActividad(event)">
+                <div class="form-group">
+                    <label for="descripcion">Descripción de la Actividad</label>
+                    <textarea id="descripcion" name="descripcion" placeholder="Ingrese la descripción de la actividad" required maxlength="100"></textarea>
+                    <small style="color: #666; font-size: 0.9em;">Máximo 100 caracteres</small>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="submit-btn">Registrar Actividad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidad de menús desplegables
+        document.querySelectorAll('.menu-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                this.classList.toggle('active');
+                this.nextElementSibling.classList.toggle('active');
+            });
+        });
+
+        // Verificar sesión y cargar nombre de usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('procesar/verificar_sesion.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.autenticado) {
+                        document.getElementById('nombreUsuario').textContent = data.nombre;
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.location.href = 'index.html';
+                });
+        });
+
+        // Función para insertar actividad
+        function insertarActividad(event) {
+            event.preventDefault();
+            
+            const descripcion = document.getElementById('descripcion').value.trim();
+            
+            if (!descripcion) {
+                mostrarMensaje('Por favor, ingrese una descripción para la actividad.', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('descripcion', descripcion);
+
+            fetch('procesar/procesar_insertar_actividad.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarMensaje('Actividad registrada exitosamente.', 'success');
+                    document.getElementById('actividadForm').reset();
+                } else {
+                    mostrarMensaje('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('Error al procesar la solicitud.', 'error');
+            });
+        }
+
+        // Función para mostrar mensajes
+        function mostrarMensaje(mensaje, tipo) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.innerHTML = `<div class="${tipo}-message">${mensaje}</div>`;
+            
+            // Limpiar mensaje después de 5 segundos
+            setTimeout(() => {
+                mensajeDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            fetch('procesar/cerrar_sesion.php', {
+                method: 'POST'
+            })
+            .then(() => {
+                localStorage.removeItem('usuario');
+                window.location.href = 'index.html';
+            })
+            .catch(error => {
+                console.error('Error al cerrar sesión:', error);
+                window.location.href = 'index.html';
+            });
+        }
+    </script>
+</body>
+</html>

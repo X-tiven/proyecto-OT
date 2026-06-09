@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Trabajador - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        body {
+            padding-top: 200px;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-left: calc(200px + ((100% - 200px - 1000px) / 2));
+            padding: 2rem;
+            transform: translateX(100px);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            color: #003087;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            border-color: #8DC63F;
+            outline: none;
+            box-shadow: 0 0 5px rgba(141, 198, 63, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        button {
+            background-color: #8DC63F;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: auto;
+            min-width: 200px;
+        }
+
+        button:hover {
+            background-color: #7ab32e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        /* Estilos para la sección de usuario simple */
+        .user-section-simple {
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .user-section-simple:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-name-simple {
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .user-triangle {
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .logout-section {
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn-simple {
+            width: 100%;
+            background: #1a4480;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn-simple:hover {
+            background: #0f2d5c;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="sidebar">
+        <div class="user-section-simple" onclick="toggleLogoutSection()">
+            <div class="user-name-simple">Bladimir Velasco</div>
+            <div class="user-triangle" id="userTriangle">▼</div>
+        </div>
+        
+        <div class="logout-section" id="logoutSection" style="display: none;">
+            <button class="logout-btn-simple" onclick="cerrarSesion()">
+                Cerrar Sesión
+            </button>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="form-card">
+            <h2>Editar Trabajador</h2>
+            <form id="searchWorkerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="searchNombre">Nombre del trabajador:</label>
+                        <input type="text" id="searchNombre" name="searchNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="searchApellidos">Apellidos del trabajador:</label>
+                        <input type="text" id="searchApellidos" name="searchApellidos">
+                    </div>
+                </div>
+                <div style="margin-top: 30px; text-align: center;">
+                    <button type="submit">Buscar Trabajador</button>
+                </div>
+            </form>
+
+            <form id="editWorkerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nuevoNombre">Nuevo Nombre:</label>
+                        <input type="text" id="nuevoNombre" name="nuevoNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoApellidos">Nuevos Apellidos:</label>
+                        <input type="text" id="nuevoApellidos" name="nuevoApellidos">
+                    </div>
+                </div>
+                <input type="hidden" id="originalNombre" name="originalNombre">
+                <input type="hidden" id="originalApellidos" name="originalApellidos">
+                <div style="margin-top: 30px; text-align: center;">
+                    <button type="submit">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.querySelectorAll('.menu-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+            this.classList.toggle('active');
+            this.nextElementSibling.classList.toggle('active');
+        });
+    });
+
+    function toggleLogoutSection() {
+        const logoutSection = document.getElementById('logoutSection');
+        const triangle = document.getElementById('userTriangle');
+        
+        if (logoutSection.style.display === 'none' || logoutSection.style.display === '') {
+            logoutSection.style.display = 'block';
+            triangle.textContent = '▲';
+        } else {
+            logoutSection.style.display = 'none';
+            triangle.textContent = '▼';
+        }
+    }
+
+    function cerrarSesion() {
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+            window.location.href = 'procesar/cerrar_sesion.php';
+        }
+    }
+
+    document.getElementById('searchWorkerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('searchNombre').value.trim();
+        const apellidos = document.getElementById('searchApellidos').value.trim();
+        
+        if (!nombre) {
+            alert('El nombre es requerido para la búsqueda');
+            return;
+        }
+
+        const searchData = {
+            TraNombre: nombre
+        };
+        
+        // Solo incluir apellido si no está vacío
+        if (apellidos) {
+            searchData.TraApellido = apellidos;
+        }
+
+        fetch('procesar/buscar_trabajador.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(searchData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('nuevoNombre').value = data.trabajador.TraNombre;
+                document.getElementById('nuevoApellidos').value = data.trabajador.TraApellido;
+                document.getElementById('originalNombre').value = data.trabajador.TraNombre;
+                document.getElementById('originalApellidos').value = data.trabajador.TraApellido;
+                document.getElementById('editWorkerForm').style.display = 'block';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al buscar el trabajador');
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const nombre = urlParams.get('nombre');
+        const apellido = urlParams.get('apellido');
+    
+        if (nombre) {
+            // Llenar los campos de búsqueda
+            document.getElementById('searchNombre').value = nombre;
+            document.getElementById('searchApellidos').value = apellido || '';
+            
+            // Simular la búsqueda automáticamente
+            document.getElementById('searchWorkerForm').dispatchEvent(new Event('submit'));
+        }
+    });
+    
+    document.getElementById('editWorkerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Obtener los valores de los campos
+        const originalNombre = document.getElementById('originalNombre').value;
+        const originalApellidos = document.getElementById('originalApellidos').value;
+        const nuevoNombre = document.getElementById('nuevoNombre').value.trim();
+        const nuevoApellidos = document.getElementById('nuevoApellidos').value.trim();
+
+        // Verificar que tenemos los valores mínimos necesarios (nombre es obligatorio, apellido no)
+        if (!originalNombre || !nuevoNombre) {
+            alert('El nombre es requerido');
+            return;
+        }
+
+        fetch('procesar/editar_trabajador.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                originalNombre: originalNombre,
+                originalApellido: originalApellidos,
+                nuevoNombre: nuevoNombre,
+                nuevoApellido: nuevoApellidos
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.success) {
+                window.location.href = 'Lista_trabajadores.html';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al actualizar el trabajador');
+        });
+    });
+    </script>
+</body>
+</html>
+

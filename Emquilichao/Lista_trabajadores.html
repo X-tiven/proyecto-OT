@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Trabajadores - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        body {
+            padding-top: 200px;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-left: calc(200px + ((100% - 200px - 1000px) / 2));
+            padding: 2rem;
+            transform: translateX(100px);
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .table-card h2 {
+            color: #003087;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .workers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .workers-table th,
+        .workers-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+        
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 0.5rem;
+        }
+
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .workers-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            color: #003087;
+        }
+
+        .workers-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .no-workers {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Estilos para la sección de usuario simple */
+        .user-section-simple {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .user-section-simple:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-name-simple {
+            color: white;
+            font-weight: normal;
+            font-size: 1rem;
+        }
+
+        .user-triangle {
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .logout-section {
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn-simple {
+            width: 100%;
+            background: #1a4480;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn-simple:hover {
+            background: #0f2d5c;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="sidebar">
+        <div class="user-section-simple" onclick="toggleLogoutSection()">
+            <div class="user-name-simple">Bladimir Velasco</div>
+            <div class="user-triangle" id="userTriangle">▼</div>
+        </div>
+        
+        <div class="logout-section" id="logoutSection" style="display: none;">
+            <button class="logout-btn-simple" onclick="cerrarSesion()">
+                Cerrar Sesión
+            </button>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="table-card">
+            <h2>Lista de Trabajadores</h2>
+            <table class="workers-table">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Acciones <span style="float: right;">Edición</span></th>
+                    </tr>
+                </thead>
+                <tbody id="workersTableBody">
+                    <!-- Los trabajadores se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    document.querySelectorAll('.menu-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+            this.classList.toggle('active');
+            this.nextElementSibling.classList.toggle('active');
+        });
+    });
+
+    // Función para cargar los trabajadores
+    function cargarTrabajadores() {
+        fetch('procesar/obtener_trabajadores.php')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('workersTableBody');
+                tableBody.innerHTML = '';
+
+                if (data && data.length > 0) {
+                    data.forEach(trabajador => {
+                        // Separar el nombre completo en nombres y apellidos
+                        const nombreCompleto = trabajador.nombre.trim();
+                        const partesNombre = nombreCompleto.split(' ');
+                        const nombres = partesNombre.slice(0, Math.ceil(partesNombre.length / 2)).join(' ');
+                        const apellidos = partesNombre.slice(Math.ceil(partesNombre.length / 2)).join(' ');
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${nombres}</td>
+                            <td>${apellidos}</td>
+                            <td>
+                                <div class="button-group" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <button class="delete-btn" onclick="eliminarTrabajador('${nombres}', '${apellidos}')">Eliminar</button>
+                                    <button class="edit-btn" onclick="editarTrabajador('${nombres}', '${apellidos}')">Editar</button>
+                                </div>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="no-workers">No hay trabajadores registrados</td>
+                        </tr>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const tableBody = document.getElementById('workersTableBody');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="no-workers">Error al cargar los trabajadores</td>
+                    </tr>
+                `;
+            });
+    }
+
+    // Agregar esta función para recargar la tabla después de editar
+    function actualizarTabla() {
+        cargarTrabajadores();
+    }
+
+    // Modificar la función editarTrabajador para que actualice la tabla después de guardar
+    function editarTrabajador(nombres, apellidos) {
+        // Redirigir a la página de edición con los datos como parámetros en la URL
+        const url = `editar_trabajador.html?nombre=${encodeURIComponent(nombres)}&apellido=${encodeURIComponent(apellidos)}`;
+        window.location.href = url;
+    }
+
+    // Cargar trabajadores cuando la página se carga
+    document.addEventListener('DOMContentLoaded', cargarTrabajadores);
+
+    // Agregar un evento para actualizar la tabla cuando se vuelve a la página
+    window.addEventListener('focus', actualizarTabla);
+    function toggleLogoutSection() {
+        const logoutSection = document.getElementById('logoutSection');
+        const triangle = document.getElementById('userTriangle');
+        
+        if (logoutSection.style.display === 'none' || logoutSection.style.display === '') {
+            logoutSection.style.display = 'block';
+            triangle.textContent = '▲';
+        } else {
+            logoutSection.style.display = 'none';
+            triangle.textContent = '▼';
+        }
+    }
+
+    function cerrarSesion() {
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+            window.location.href = 'procesar/cerrar_sesion.php';
+        }
+    }
+
+    function eliminarTrabajador(TraNombre, TraApellido) {
+        if (confirm(`¿Estás seguro de que deseas eliminar al trabajador ${TraNombre} ${TraApellido}?`)) {
+            const data = {
+                TraNombre: TraNombre,
+                TraApellido: TraApellido
+            };
+            
+            fetch('procesar/eliminar_trabajador.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Trabajador eliminado exitosamente');
+                    cargarTrabajadores();
+                } else {
+                    alert('Error al eliminar el trabajador: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
+            });
+        }
+    }
+
+    </script>
+</body>
+</html>

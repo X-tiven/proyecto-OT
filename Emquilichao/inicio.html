@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Emquilichao</title>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 220px 2rem 2rem;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .content-card h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <div class="menu-item" id="nombreUsuario"></div>
+                <ul class="submenu">
+                    <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+            </li>
+            <li>
+                <div class="menu-item">Trabajadores</div>
+                <ul class="submenu">
+                    <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                    <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Plan Diario</div>
+                <ul class="submenu">
+                    <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-item">Actividades</div>
+                <ul class="submenu">
+                    <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                    <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="content-card">
+            <h2>Bienvenido a Emquilichao</h2>
+            <p>Sistema de gestión de servicios públicos de Santander de Quilichao. Aquí podrá realizar todas sus gestiones de manera fácil y segura.</p>
+            
+            <!-- Nueva sección para mostrar los años -->
+            <div class="anos-section" style="margin-top: 2rem;">
+                <h3 style="color: #2c3e50; margin-bottom: 1rem;">Años Disponibles</h3>
+                <div id="anos-container-main" class="anos-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('procesar/verificar_sesion.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.autenticado) {
+                window.location.href = 'index.html';
+            } else {
+                // Mostrar solo el nombre del usuario
+                document.getElementById('nombreUsuario').textContent = data.nombre;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Solo redirigir si hay un error de autenticación, no por errores de red
+            if (error.message === 'No autenticado') {
+                window.location.href = 'index.html';
+            }
+        });
+    cargarAnos();
+});
+
+
+document.querySelectorAll('.menu-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+        this.classList.toggle('active');
+        this.nextElementSibling.classList.toggle('active');
+    });
+});
+
+function cerrarSesion() {
+    // Mostrar confirmación antes de cerrar sesión
+    if (confirm('¿Está seguro que desea cerrar sesión?')) {
+        // Solo se ejecuta si el usuario presiona "Aceptar"
+        fetch('procesar/cerrar_sesion.php')
+            .then(() => {
+                window.location.href = 'index.html';
+            })
+            .catch(() => {
+                window.location.href = 'index.html';
+            });
+    }
+    // Si el usuario presiona "Cancelar", no se ejecuta nada y permanece en la página
+}
+
+// Función para cargar años disponibles
+function cargarAnos() {
+    fetch('procesar/obtener_anos.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('anos-container-main');
+            
+            if (Array.isArray(data) && data.length > 0) {
+                container.innerHTML = '';
+                data.forEach(ano => {
+                    const anoCard = document.createElement('div');
+                    anoCard.className = 'ano-card';
+                    anoCard.style.cssText = `
+                        background: linear-gradient(135deg, #003087 0%, #002670 100%);
+                        border-radius: 10px;
+                        padding: 2rem;
+                        color: white;
+                        text-align: center;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                        border: 1px solid rgba(255,255,255,0.1);
+                        margin-bottom: 1rem;
+                        min-width: 350px;
+                        width: 100%;
+                    `;
+                    
+                    anoCard.innerHTML = `
+                        <div class="ano-header" onclick="toggleMeses(${ano})" style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 1.5rem;
+                            cursor: pointer;
+                        ">
+                            <h4 style="margin: 0; font-size: 1.8rem; font-weight: bold;">${ano}</h4>
+                            <span id="arrow-${ano}" style="
+                                font-size: 1.4rem;
+                                transition: transform 0.3s ease;
+                            ">▼</span>
+                        </div>
+                        <div id="meses-${ano}" class="meses-container" style="
+                            display: none;
+                            grid-template-columns: repeat(6, 1fr);
+                            gap: 0.5rem;
+                            margin-top: 1rem;
+                        ">
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 1)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Ene</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 2)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Feb</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 3)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Mar</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 4)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Abr</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 5)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">May</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 6)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Jun</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 7)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Jul</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 8)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Ago</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 9)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Sep</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 10)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Oct</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 11)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Nov</div>
+                            <div class="mes-item" onclick="verPlanesDelMes(${ano}, 12)" style="
+                                background: rgba(255,255,255,0.15);
+                                border: 1px solid rgba(255,255,255,0.3);
+                                padding: 0.4rem 0.3rem;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 0.8rem;
+                                font-weight: 500;
+                                text-align: center;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Dic</div>
+                        </div>
+                    `;
+                    
+                    // Agregar efecto hover a la tarjeta completa
+                    anoCard.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-3px)';
+                        this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
+                    });
+                    
+                    anoCard.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                    });
+                    
+                    container.appendChild(anoCard);
+                });
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No hay años disponibles</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar años:', error);
+            document.getElementById('anos-container-main').innerHTML = '<p style="text-align: center; color: #e74c3c; font-style: italic;">Error al cargar años</p>';
+        });
+}
+
+// Función para mostrar/ocultar los meses
+function toggleMeses(ano) {
+    const mesesContainer = document.getElementById(`meses-${ano}`);
+    const arrow = document.getElementById(`arrow-${ano}`);
+    
+    if (mesesContainer.style.display === 'none' || mesesContainer.style.display === '') {
+        mesesContainer.style.display = 'grid';
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        mesesContainer.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Función para ver planes de un mes específico
+function verPlanesDelMes(ano, mes) {
+    const nombreMes = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ][mes - 1];
+    
+    // Crear modal para seleccionar fecha específica
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        ">
+            <div style="
+                background: white;
+                border-radius: 10px;
+                padding: 30px;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                text-align: center;
+            ">
+                <h3 style="
+                    color: #003087;
+                    margin-bottom: 20px;
+                    font-size: 20px;
+                ">Seleccionar Fecha - ${nombreMes} ${ano}</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="
+                        display: block;
+                        margin-bottom: 10px;
+                        color: #333;
+                        font-weight: bold;
+                    ">Selecciona la fecha específica:</label>
+                    <input type="date" id="fechaEspecifica" style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 2px solid #003087;
+                        border-radius: 5px;
+                        font-size: 16px;
+                    " min="${ano}-${mes.toString().padStart(2, '0')}-01" 
+                       max="${ano}-${mes.toString().padStart(2, '0')}-31">
+                </div>
+                
+                <div style="
+                    display: flex;
+                    gap: 10px;
+                    justify-content: center;
+                ">
+                    <button onclick="buscarPlanFecha()" style="
+                        background: #003087;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        font-weight: bold;
+                    ">Buscar Plan</button>
+                    
+                    <button onclick="this.closest('div').parentElement.parentElement.remove()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    ">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Establecer fecha por defecto al primer día del mes
+    const fechaInput = document.getElementById('fechaEspecifica');
+    fechaInput.value = `${ano}-${mes.toString().padStart(2, '0')}-01`;
+    
+    // Función para buscar plan de fecha específica
+    window.buscarPlanFecha = function() {
+        const fechaSeleccionada = document.getElementById('fechaEspecifica').value;
+        
+        if (!fechaSeleccionada) {
+            alert('Por favor selecciona una fecha');
+            return;
+        }
+        
+        // Cerrar modal
+        modal.remove();
+        
+        // Mostrar indicador de carga
+        const loadingDiv = document.createElement('div');
+        loadingDiv.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 48, 135, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                color: white;
+                font-size: 18px;
+            ">
+                <div>
+                    <div style="margin-bottom: 20px;">Buscando planes para ${new Date(fechaSeleccionada).toLocaleDateString('es-ES')}...</div>
+                    <div style="
+                        width: 50px;
+                        height: 50px;
+                        border: 3px solid rgba(255,255,255,0.3);
+                        border-top: 3px solid white;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto;
+                    "></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(loadingDiv);
+        
+        // Buscar planes para la fecha específica
+        fetch(`procesar/obtener_plan_fecha.php?fecha=${fechaSeleccionada}`)
+            .then(response => response.json())
+            .then(data => {
+                // Remover indicador de carga
+                document.body.removeChild(loadingDiv);
+                
+                if (data.error) {
+                    alert('Error al cargar planes: ' + data.error);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    alert(`No hay planes registrados para el ${new Date(fechaSeleccionada).toLocaleDateString('es-ES')}`);
+                    return;
+                }
+                
+                // Convertir los planes al formato esperado por plan_diario_alcantarillado.html
+                const actividadesParaPlan = data.map(plan => ({
+                    direccion: plan.direccion,
+                    descripcion: plan.descripcion,
+                    trabajadores: plan.trabajadores.split(', ').filter(t => t.trim()),
+                    observaciones: plan.observaciones || ''
+                }));
+                
+                // Crear parámetros para la URL
+                const parametros = new URLSearchParams();
+                parametros.set('fecha', fechaSeleccionada);
+                parametros.set('actividades', JSON.stringify(actividadesParaPlan));
+                
+                // Redirigir a plan_diario_alcantarillado.html con los datos
+                const urlPlanDiario = `plan_diario_alcantarillado.html?${parametros.toString()}`;
+                window.open(urlPlanDiario, '_blank');
+            })
+            .catch(error => {
+                // Remover indicador de carga
+                document.body.removeChild(loadingDiv);
+                console.error('Error:', error);
+                alert('Error al cargar los planes de la fecha');
+            });
+    };
+}
+
+// Mantener las funciones originales para compatibilidad
+function verPlanesDelAno(ano) {
+    alert(`Mostrando todos los planes del año ${ano}`);
+}
+
+function reporteAnual(ano) {
+    alert(`Generando reporte anual para ${ano}`);
+}
+
+function estadisticasAno(ano) {
+    alert(`Mostrando estadísticas del año ${ano}`);
+}
+</script>
+</html>

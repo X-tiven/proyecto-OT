@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Diario de Trabajo Alcantarillado - Emquilichao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #8DC63F;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        .header-logos {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 100px;
+            z-index: 999;
+        }
+
+        .header-logos img {
+            height: 70px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: #002670;
+            padding-top: 200px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 998;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background: #001a4d;
+            padding: 0.5rem 0;
+        }
+
+        .submenu li {
+            padding: 0.6rem 2rem;
+            border-bottom: none;
+            font-size: 0.9em;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active::after {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 220px 2rem 2rem;
+            min-height: 100vh;
+            background: #003087;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            vertical-align: middle;
+        }   
+
+        .logo-cell img {
+            max-width: 95%;
+            height: auto;
+            max-height: 70px;
+            object-fit: contain;
+        }
+
+        .code-cell {
+            width: 20%;
+        }
+
+        .code-cell p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .info-table td {
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .main-table th, .main-table td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: left;
+        }
+
+        /* Estilo específico para campos de tipo de trabajo */
+        textarea[name*="tipo"] {
+            text-align: left;
+            padding-left: 5px;
+            vertical-align: top;
+        }
+        
+        /* Estilo específico para campos de dirección */
+        textarea[name*="direccion"] {
+            text-align: left;
+            padding-left: 5px;
+            vertical-align: top;
+        }
+        
+        /* Estilo para celdas de la tabla principal */
+        .main-table td {
+            vertical-align: top;
+            text-align: left;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 3px; /* Corregido el valor negativo */
+            border: none;
+            background-color: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: left;
+        }
+
+        /* Alineación específica para campos de personal */
+        .personal-container input {
+            text-align: left !important;
+            padding-left: 2px !important;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 20px; /* Valor más realista */
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .personal-row {
+            height: 18px; /* Reducido de 30px a 18px */
+            font-size: 11px; /* Fuente más pequeña */
+            text-align: left !important;
+            padding-left: 2px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            padding: 5px; /* Reducido de 10px a 5px */
+            vertical-align: middle;
+        }
+
+        .info-table td {
+            border: 1px solid #000;
+            padding: 5px; /* Reducido de 10px a 5px */
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 10px; /* Reducido de 20px a 10px */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px; /* Reducido de 20px a 10px */
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px; /* Reducido de 20px a 10px */
+        }
+
+        .main-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .direccion-col {
+            width: 25%;
+        }
+
+        .tipo-col {
+            width: 25%; /* Cambiado de 15% a 25% para hacer más ancha la columna */
+        }
+
+        .personal-col {
+            width: 25%; /* Reducido de 30% a 25% para compensar */
+        }
+
+        .observaciones-col {
+            width: 25%; /* Reducido de 30% a 25% para compensar */
+        }
+
+        .personal-row {
+            height: 30px;
+            text-align: left !important;
+            padding-left: 2px;
+            box-sizing: border-box;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 3px; /* Corregido el valor negativo */
+            border: none;
+            background-color: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: left;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 20px; /* Valor más realista */
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #8DC63F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .print-btn:hover {
+            background-color: #7ab32e;
+        }
+
+        .delete-btn {
+            background-color: #dc3545 !important;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333 !important;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background-color: white;
+            }
+
+            .top-bar, .header-logos, .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+                background: white;
+            }
+
+            .content-card {
+                box-shadow: none;
+                padding: 0;
+                border-radius: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333 !important;
+        }
+
+        .botones-orden-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        
+        .botones-orden-container h4 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .botones-orden-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+        }
+        
+        .btn-orden-fila {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-orden-fila:hover {
+            background-color: #138496;
+        }
+        
+        .btn-orden-fila:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .sin-actividades {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .observaciones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: 100%;
+        }
+        
+        .observaciones-container textarea {
+            flex: 1;
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .boton-orden-inline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .btn-orden-fila {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            white-space: nowrap;
+            max-width: 100%;
+            text-align: center;
+        }
+        
+        .btn-orden-fila:hover {
+            background-color: #138496;
+        }
+        
+        .btn-orden-fila:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>Empresa de Servicios Públicos</div>
+        <div>Santander de Quilichao, Cauca</div>
+    </div>
+    <div class="header-logos">
+        <img src="imagenes/logo.jpeg" alt="Logo Emquilichao">
+        <img src="imagenes/parte superior.png" alt="Logo Superior">
+    </div>
+    <div class="sidebar">
+    <ul class="sidebar-menu">
+        <li>
+            <div class="menu-item" id="nombreUsuario"></div>
+            <ul class="submenu">
+                <li><a href="index.html" onclick="cerrarSesion()" style="color: white; text-decoration: none; display: block;">Cerrar Sesión</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
+        </li>
+        <li>
+            <div class="menu-item">Trabajadores</div>
+            <ul class="submenu">
+                <li><a href="insertar_trabajador.html" style="color: white; text-decoration: none; display: block;">Registrar Trabajador</a></li>
+                <li><a href="Lista_trabajadores.html" style="color: white; text-decoration: none; display: block;">Lista de Trabajadores</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="menu-item">Plan Diario</div>
+            <ul class="submenu">
+                <li><a href="insertar_plan.html" style="color: white; text-decoration: none;">Insertar Plan</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="menu-item">Actividades</div>
+            <ul class="submenu">
+                <li><a href="insertar_actividad.html" style="color: white; text-decoration: none; display: block;">Insertar Actividad</a></li>
+                <li><a href="Lista_actividades.html" style="color: white; text-decoration: none; display: block;">Lista de Actividades</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+    <div class="main-content">
+        <div class="content-card">
+            <div class="container">
+                <div class="container">
+                    <form id="planDiarioForm" method="POST" action="procesar/procesar_plan_diario.php">
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-cell">
+                                    <img src="imagenes/emquilichao.jpeg" alt="Logo Emquilichao">
+                                </td>
+                                <td class="title-cell">
+                                    <p>ALCANTARILLADO</p>
+                                    <p>PLAN DIARIO DE TRABAJO ALCANTARILLADO</p>
+                                </td>
+                                <td class="code-cell">
+                                    <p>Código: FO AL 02</p>
+                                    <p>Versión: 1.0</p>
+                                    <p>Emisión: 09/10/2023</p>
+                                </td>
+                            </tr>
+                        </table>
+                
+                        <table class="info-table">
+                            <tr>
+                                <td>
+                                    <label for="fecha">FECHA: </label>
+                                    <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+                                </td>
+                                <td>
+                                    <label for="dia">DÍA: </label>
+                                    <input type="text" id="dia" name="dia">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label for="inspector">INSPECTOR: </label>
+                                    <input type="text" id="inspector" name="inspector">
+                                </td>
+                            </tr>
+                        </table>
+                
+                        <table class="main-table">
+                            <thead>
+                                <tr>
+                                    <th class="direccion-col">DIRECCIÓN TRABAJO</th>
+                                    <th class="tipo-col">TIPO DE TRABAJO</th>
+                                    <th class="personal-col">PERSONAL ASIGNADO</th>
+                                    <th class="observaciones-col">OBSERVACIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion1"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo1"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal1_1" class="personal-row">
+                                            <input type="text" name="personal1_2" class="personal-row">
+                                            <input type="text" name="personal1_3" class="personal-row">
+                                            <input type="text" name="personal1_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones1"></textarea>
+                                            <div id="botonOrden1" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion2"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo2"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal2_1" class="personal-row">
+                                            <input type="text" name="personal2_2" class="personal-row">
+                                            <input type="text" name="personal2_3" class="personal-row">
+                                            <input type="text" name="personal2_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones2"></textarea>
+                                            <div id="botonOrden2" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion3"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo3"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal3_1" class="personal-row">
+                                            <input type="text" name="personal3_2" class="personal-row">
+                                            <input type="text" name="personal3_3" class="personal-row">
+                                            <input type="text" name="personal3_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones3"></textarea>
+                                            <div id="botonOrden3" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion4"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo4"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal4_1" class="personal-row">
+                                            <input type="text" name="personal4_2" class="personal-row">
+                                            <input type="text" name="personal4_3" class="personal-row">
+                                            <input type="text" name="personal4_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones4"></textarea>
+                                            <div id="botonOrden4" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion5"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo5"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal5_1" class="personal-row">
+                                            <input type="text" name="personal5_2" class="personal-row">
+                                            <input type="text" name="personal5_3" class="personal-row">
+                                            <input type="text" name="personal5_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones5"></textarea>
+                                            <div id="botonOrden5" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion6"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo6"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal6_1" class="personal-row">
+                                            <input type="text" name="personal6_2" class="personal-row">
+                                            <input type="text" name="personal6_3" class="personal-row">
+                                            <input type="text" name="personal6_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones6"></textarea>
+                                            <div id="botonOrden6" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea name="direccion7"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="tipo7"></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="personal-container">
+                                            <input type="text" name="personal7_1" class="personal-row">
+                                            <input type="text" name="personal7_2" class="personal-row">
+                                            <input type="text" name="personal7_3" class="personal-row">
+                                            <input type="text" name="personal7_4" class="personal-row">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="observaciones-container">
+                                            <textarea name="observaciones7"></textarea>
+                                            <div id="botonOrden7" class="boton-orden-inline"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Botones de orden de trabajo por fila -->
+                        <div id="botonesOrdenTrabajo" class="botones-orden-container">
+                            <!-- Los botones se generarán dinámicamente -->
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin: 20px auto; justify-content: center; max-width: 600px;">
+                            <button type="button" class="print-btn" onclick="guardarCambiosPlan()">Guardar Cambios</button>
+                            <button type="button" class="print-btn" onclick="imprimirFormato()">Imprimir Formato</button>
+                            <button type="button" class="print-btn delete-btn" onclick="eliminarPlanDiario()">Eliminar Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const params = new URLSearchParams(window.location.search);
+const fecha = params.get('fecha');
+const actividadesJson = params.get('actividades');
+
+function cerrarSesion() {
+    fetch('procesar/cerrar_sesion.php').then(() => window.location.href = 'index.html');
+}
+
+// Funcionalidad del sidebar
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar menús desplegables
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    menuItems.forEach(item => {
+        // Solo agregar evento si tiene submenu
+        const parentLi = item.parentElement;
+        const submenu = parentLi.querySelector('.submenu');
+        
+        if (submenu) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Cerrar otros submenús
+                menuItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        const otherSubmenu = otherItem.parentElement.querySelector('.submenu');
+                        if (otherSubmenu) {
+                            otherSubmenu.classList.remove('active');
+                        }
+                    }
+                });
+                
+                // Toggle del menú actual
+                item.classList.toggle('active');
+                submenu.classList.toggle('active');
+            });
+        }
+    });
+    
+    // Configurar fecha
+    if (fecha) {
+        document.getElementById('fecha').value = fecha;
+        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const fechaPartes = fecha.split('-');
+        const fechaObj = new Date(fechaPartes[0], fechaPartes[1] - 1, fechaPartes[2]);
+        document.getElementById('dia').value = dias[fechaObj.getDay()];
+    }
+
+    // Cargar actividades desde la base de datos por fecha
+    if (fecha) {
+        fetch(`procesar/obtener_plan_fecha.php?fecha=${fecha}`)
+            .then(response => response.json())
+            .then(actividades => {
+                if (!Array.isArray(actividades) || actividades.length === 0) {
+                    console.log('No hay actividades para la fecha:', fecha);
+                    return;
+                }
+                
+                actividades.forEach((actividad, index) => {
+                    const numeroFila = index + 1;
+                    
+                    if (numeroFila <= 7) {
+                        // Dirección
+                        const direccionField = document.querySelector(`textarea[name="direccion${numeroFila}"]`);
+                        if (direccionField) direccionField.value = actividad.direccion;
+                        
+                        // Tipo de trabajo
+                        const tipoField = document.querySelector(`textarea[name="tipo${numeroFila}"]`);
+                        if (tipoField) tipoField.value = actividad.descripcion;
+                        
+                        // Personal asignado - Manejar tanto array como string
+                        if (actividad.trabajadores) {
+                            let trabajadoresArray;
+                            
+                            if (typeof actividad.trabajadores === 'string') {
+                                trabajadoresArray = actividad.trabajadores.split(',').map(t => t.trim()).filter(t => t);
+                            } else if (Array.isArray(actividad.trabajadores)) {
+                                trabajadoresArray = actividad.trabajadores;
+                            } else {
+                                trabajadoresArray = [];
+                            }
+                            
+                            // Mostrar dos nombres por campo separados por guion, hasta 4 campos
+                            for (let i = 0; i < Math.min(4, Math.ceil(trabajadoresArray.length / 2) * 2); i += 2) {
+                                const personalField = document.querySelector(`input[name="personal${numeroFila}_${(i/2) + 1}"]`);
+                                if (personalField) {
+                                    if (i + 1 < trabajadoresArray.length) {
+                                        personalField.value = trabajadoresArray[i].trim() + " - " + trabajadoresArray[i+1].trim();
+                                    } else {
+                                        personalField.value = trabajadoresArray[i].trim();
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Observaciones
+                        const observacionesField = document.querySelector(`textarea[name="observaciones${numeroFila}"]`);
+                        if (observacionesField && actividad.observaciones) {
+                            observacionesField.value = actividad.observaciones;
+                        }
+                    }
+                });
+                
+                // Botones de orden
+                setTimeout(crearBotonesOrdenTrabajo, 100);
+            })
+            .catch(error => {
+                console.error('Error al obtener actividades por fecha:', error);
+            });
+    }
+    
+    // Procesar actividades
+    if (actividadesJson) {
+        try {
+            const actividades = JSON.parse(decodeURIComponent(actividadesJson));
+            
+            actividades.forEach((actividad, index) => {
+                const numeroFila = index + 1;
+                
+                if (numeroFila <= 7) {
+                    // Dirección
+                    const direccionField = document.querySelector(`textarea[name="direccion${numeroFila}"]`);
+                    if (direccionField) {
+                        direccionField.value = actividad.direccion;
+                    }
+                    
+                    // Tipo de trabajo
+                    const tipoField = document.querySelector(`textarea[name="tipo${numeroFila}"]`);
+                    if (tipoField) {
+                        tipoField.value = actividad.descripcion;
+                    }
+                    
+                    // Personal asignado - Manejar tanto array como string
+                    if (actividad.trabajadores) {
+                        let trabajadoresArray;
+                        
+                        // Si es un string, dividirlo por comas
+                        if (typeof actividad.trabajadores === 'string') {
+                            trabajadoresArray = actividad.trabajadores.split(',').map(t => t.trim()).filter(t => t);
+                        } else if (Array.isArray(actividad.trabajadores)) {
+                            trabajadoresArray = actividad.trabajadores;
+                        } else {
+                            trabajadoresArray = [];
+                        }
+                        
+                        // Modificación para mostrar dos nombres por fila separados por un guion
+                        for (let i = 0; i < Math.min(4, Math.ceil(trabajadoresArray.length / 2) * 2); i += 2) {
+                            const personalField = document.querySelector(`input[name="personal${numeroFila}_${(i/2) + 1}"]`);
+                            if (personalField) {
+                                if (i + 1 < trabajadoresArray.length) {
+                                    // Si hay dos nombres disponibles, mostrarlos separados por un guion
+                                    personalField.value = trabajadoresArray[i].trim() + " - " + trabajadoresArray[i+1].trim();
+                                } else {
+                                    // Si solo queda un nombre, mostrarlo solo
+                                    personalField.value = trabajadoresArray[i].trim();
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Observaciones
+                    const observacionesField = document.querySelector(`textarea[name="observaciones${numeroFila}"]`);
+                    if (observacionesField && actividad.observaciones) {
+                        observacionesField.value = actividad.observaciones;
+                    }
+                }
+            });
+            
+            // Crear botones después de procesar actividades
+            setTimeout(crearBotonesOrdenTrabajo, 100);
+            
+        } catch (error) {
+            console.error('Error al procesar actividades:', error);
+        }
+    }
+    
+    // También crear botones cuando se modifique manualmente el formulario
+    document.addEventListener('input', function(e) {
+        if (e.target.name && (e.target.name.includes('direccion') || e.target.name.includes('tipo'))) {
+            setTimeout(crearBotonesOrdenTrabajo, 100);
+        }
+    });
+    
+    // Verificar sesión
+    fetch('procesar/verificar_sesion.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.autenticado) {
+                document.getElementById('nombreUsuario').textContent = data.nombre;
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+});
+
+function imprimirFormato() {
+    window.print();
+}
+
+// Función para crear botones dinámicos de orden de trabajo
+function crearBotonesOrdenTrabajo() {
+    for (let i = 1; i <= 7; i++) {
+        const contenedorBoton = document.getElementById(`botonOrden${i}`);
+        const direccion = document.querySelector(`textarea[name="direccion${i}"]`)?.value;
+        const tipo = document.querySelector(`textarea[name="tipo${i}"]`)?.value;
+        
+        if (contenedorBoton) {
+            contenedorBoton.innerHTML = '';
+            
+            if (direccion && tipo) {
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.className = 'btn-orden-fila';
+                boton.textContent = 'Generar Orden';
+                boton.title = `Generar orden de trabajo para: ${tipo}`;
+                boton.onclick = () => generarOrdenTrabajoFila(i);
+                contenedorBoton.appendChild(boton);
+            }
+        }
+    }
+}
+
+// Función para generar orden de trabajo de una fila específica
+function generarOrdenTrabajoFila(numeroFila) {
+    const fecha = document.getElementById('fecha').value;
+    const direccion = document.querySelector(`textarea[name="direccion${numeroFila}"]`)?.value;
+    const tipo = document.querySelector(`textarea[name="tipo${numeroFila}"]`)?.value;
+    
+    if (!direccion || !tipo) {
+        alert(`No hay información completa en la fila ${numeroFila}`);
+        return;
+    }
+    
+    // Obtener trabajadores de esta fila específica
+    let trabajadoresFila = [];
+    for (let j = 1; j <= 4; j++) {
+        const trabajador = document.querySelector(`input[name="personal${numeroFila}_${j}"]`)?.value;
+        if (trabajador && trabajador.trim()) {
+            trabajadoresFila.push(trabajador.trim());
+        }
+    }
+    
+    // Crear parámetros para orden de trabajo
+    const parametros = new URLSearchParams();
+    parametros.set('fecha', fecha);
+    parametros.set('descripcion', tipo);
+    parametros.set('direccion', direccion);
+    parametros.set('trabajadores', trabajadoresFila.join(', '));
+    parametros.set('fila', numeroFila);
+    
+    const urlOrdenTrabajo = `orden_trabajo.html?${parametros.toString()}`;
+    window.open(urlOrdenTrabajo, '_blank');
+}
+
+// Función original modificada para generar orden con todas las actividades
+function generarOrdenTrabajoCompleta() {
+    const fecha = document.getElementById('fecha').value;
+    
+    // Obtener todas las actividades del formulario
+    let actividades = [];
+    let todosTrabajadores = [];
+    
+    for (let i = 1; i <= 7; i++) {
+        const direccion = document.querySelector(`textarea[name="direccion${i}"]`)?.value;
+        const tipo = document.querySelector(`textarea[name="tipo${i}"]`)?.value;
+        
+        if (direccion && tipo) {
+            actividades.push(`${tipo} en ${direccion}`);
+            
+            // Obtener trabajadores de esta fila
+            for (let j = 1; j <= 4; j++) {
+                const trabajador = document.querySelector(`input[name="personal${i}_${j}"]`)?.value;
+                if (trabajador && !todosTrabajadores.includes(trabajador)) {
+                    todosTrabajadores.push(trabajador);
+                }
+            }
+        }
+    }
+    
+    if (actividades.length === 0) {
+        alert('No hay actividades para generar orden de trabajo');
+        return;
+    }
+    
+    // Crear parámetros para orden de trabajo
+    const parametros = new URLSearchParams();
+    parametros.set('fecha', fecha);
+    parametros.set('descripcion', actividades.join('; '));
+    parametros.set('trabajadores', todosTrabajadores.join(', '));
+    
+    const urlOrdenTrabajo = `orden_trabajo.html?${parametros.toString()}`;
+    window.open(urlOrdenTrabajo, '_blank');
+}
+
+// Nueva función para generar orden de trabajo
+// Función para crear botones dinámicos de orden de trabajo
+function crearBotonesOrdenTrabajo() {
+    const contenedorBotones = document.getElementById('botonesOrdenTrabajo');
+    contenedorBotones.innerHTML = '';
+    
+    let hayActividades = false;
+    const botonesHTML = [];
+    
+    // Crear título
+    botonesHTML.push('<h4>Órdenes de Trabajo por Actividad</h4>');
+    botonesHTML.push('<div class="botones-orden-grid">');
+    
+    for (let i = 1; i <= 7; i++) {
+        const direccion = document.querySelector(`textarea[name="direccion${i}"]`)?.value;
+        const tipo = document.querySelector(`textarea[name="tipo${i}"]`)?.value;
+        
+        if (direccion && tipo) {
+            hayActividades = true;
+            
+            const textoBoton = `Fila ${i}: ${tipo} - ${direccion.substring(0, 40)}${direccion.length > 40 ? '...' : ''}`;
+            
+            botonesHTML.push(`
+                <button type="button" class="btn-orden-fila" onclick="generarOrdenTrabajoFila(${i})" title="${tipo} en ${direccion}">
+                    ${textoBoton}
+                </button>
+            `);
+        }
+    }
+    
+    botonesHTML.push('</div>');
+    
+    if (hayActividades) {
+        contenedorBotones.innerHTML = botonesHTML.join('');
+    } else {
+        contenedorBotones.innerHTML = '<div class="sin-actividades">No hay actividades para generar órdenes de trabajo</div>';
+    }
+}
+
+// Función para generar orden de trabajo de una fila específica
+function generarOrdenTrabajoFila(numeroFila) {
+    const fecha = document.getElementById('fecha').value;
+    const direccion = document.querySelector(`textarea[name="direccion${numeroFila}"]`)?.value;
+    const tipo = document.querySelector(`textarea[name="tipo${numeroFila}"]`)?.value;
+    
+    if (!direccion || !tipo) {
+        alert(`No hay información completa en la fila ${numeroFila}`);
+        return;
+    }
+    
+    // Obtener trabajadores de esta fila específica
+    let trabajadoresFila = [];
+    for (let j = 1; j <= 4; j++) {
+        const trabajador = document.querySelector(`input[name="personal${numeroFila}_${j}"]`)?.value;
+        if (trabajador && trabajador.trim()) {
+            trabajadoresFila.push(trabajador.trim());
+        }
+    }
+    
+    // Crear parámetros para orden de trabajo
+    const parametros = new URLSearchParams();
+    parametros.set('fecha', fecha);
+    parametros.set('descripcion', tipo); // Solo el tipo de trabajo
+    parametros.set('direccion', direccion); // Dirección separada
+    parametros.set('trabajadores', trabajadoresFila.join(', '));
+    parametros.set('fila', numeroFila);
+    
+    const urlOrdenTrabajo = `orden_trabajo.html?${parametros.toString()}`;
+    window.open(urlOrdenTrabajo, '_blank');
+}
+
+// Función original modificada para generar orden con todas las actividades
+function generarOrdenTrabajoCompleta() {
+    const fecha = document.getElementById('fecha').value;
+    
+    // Obtener todas las actividades del formulario
+    let actividades = [];
+    let todosTrabajadores = [];
+    
+    for (let i = 1; i <= 7; i++) {
+        const direccion = document.querySelector(`textarea[name="direccion${i}"]`)?.value;
+        const tipo = document.querySelector(`textarea[name="tipo${i}"]`)?.value;
+        
+        if (direccion && tipo) {
+            actividades.push(`${tipo} en ${direccion}`);
+            
+            // Obtener trabajadores de esta fila
+            for (let j = 1; j <= 4; j++) {
+                const trabajador = document.querySelector(`input[name="personal${i}_${j}"]`)?.value;
+                if (trabajador && !todosTrabajadores.includes(trabajador)) {
+                    todosTrabajadores.push(trabajador);
+                }
+            }
+        }
+    }
+    
+    if (actividades.length === 0) {
+        alert('No hay actividades para generar orden de trabajo');
+        return;
+    }
+    
+    // Crear parámetros para orden de trabajo
+    const parametros = new URLSearchParams();
+    parametros.set('fecha', fecha);
+    parametros.set('descripcion', actividades.join('; '));
+    parametros.set('trabajadores', todosTrabajadores.join(', '));
+    
+    const urlOrdenTrabajo = `orden_trabajo.html?${parametros.toString()}`;
+    window.open(urlOrdenTrabajo, '_blank');
+}
+
+// Función para guardar cambios del plan diario
+function guardarCambiosPlan() {
+    const fecha = document.getElementById('fecha').value;
+    const inspector = document.getElementById('inspector').value;
+    
+    if (!fecha) {
+        alert('La fecha es obligatoria para guardar el plan');
+        return;
+    }
+    
+    // Primero eliminar los planes existentes de esta fecha
+    const confirmacion = confirm('¿Desea guardar los cambios? Esto actualizará el plan diario existente.');
+    if (!confirmacion) {
+        return;
+    }
+    
+    // Recopilar todas las actividades del formulario
+    const actividades = [];
+    
+    for (let i = 1; i <= 7; i++) {
+        const direccion = document.querySelector(`textarea[name="direccion${i}"]`)?.value?.trim();
+        const tipo = document.querySelector(`textarea[name="tipo${i}"]`)?.value?.trim();
+        const observaciones = document.querySelector(`textarea[name="observaciones${i}"]`)?.value?.trim();
+        
+        // Recopilar personal asignado
+        const personal = [];
+        for (let j = 1; j <= 4; j++) {
+            const trabajador = document.querySelector(`input[name="personal${i}_${j}"]`)?.value?.trim();
+            if (trabajador) {
+                personal.push(trabajador);
+            }
+        }
+        
+        // Solo agregar si hay dirección y tipo
+        if (direccion && tipo) {
+            actividades.push({
+                direccion: direccion,
+                descripcion: tipo,
+                trabajador: personal.join(', '),
+                observaciones: observaciones || ''
+            });
+        }
+    }
+    
+    if (actividades.length === 0) {
+        alert('No hay actividades para guardar. Agregue al menos una actividad con dirección y tipo de trabajo.');
+        return;
+    }
+    
+    // Mostrar indicador de carga
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            font-size: 18px;
+        ">
+            <div style="text-align: center;">
+                <div style="margin-bottom: 20px;">Guardando cambios...</div>
+                <div style="
+                    width: 50px;
+                    height: 50px;
+                    border: 3px solid rgba(255,255,255,0.3);
+                    border-top: 3px solid white;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto;
+                "></div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loadingDiv);
+    
+    // Primero eliminar planes existentes de esta fecha
+    fetch('procesar/eliminar_plan_diario.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            fecha: fecha
+        })
+    })
+    .then(response => response.json())
+    .then(deleteResult => {
+        // Luego guardar las nuevas actividades
+        const promesasGuardado = actividades.map(actividad => {
+            return fetch('procesar/procesar_plan_diario.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fecha: fecha,
+                    direccion: actividad.direccion,
+                    descripcion: actividad.descripcion,
+                    trabajador: actividad.trabajador,
+                    observaciones: actividad.observaciones
+                })
+            })
+            .then(response => response.json());
+        });
+        
+        return Promise.all(promesasGuardado);
+    })
+    .then(resultados => {
+        // Remover indicador de carga
+        document.body.removeChild(loadingDiv);
+        
+        const errores = resultados.filter(r => !r.success);
+        
+        if (errores.length === 0) {
+            alert(`Plan diario actualizado exitosamente. Se guardaron ${actividades.length} actividades.`);
+        } else {
+            const exitosos = resultados.length - errores.length;
+            alert(`Se guardaron ${exitosos} de ${actividades.length} actividades. Errores: ${errores.map(e => e.message).join(', ')}`);
+        }
+    })
+    .catch(error => {
+        // Remover indicador de carga
+        if (document.body.contains(loadingDiv)) {
+            document.body.removeChild(loadingDiv);
+        }
+        console.error('Error:', error);
+        alert('Error de conexión al guardar el plan');
+    });
+}
+
+// Función para eliminar plan diario
+function eliminarPlanDiario() {
+    const fecha = document.getElementById('fecha').value;
+    
+    if (!fecha) {
+        alert('No hay fecha especificada para eliminar');
+        return;
+    }
+    
+    // Confirmar eliminación
+    const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES');
+    const confirmacion = confirm(
+        `¿Está seguro de que desea eliminar TODOS los planes del día ${fechaFormateada}?\n\n` +
+        `Esta acción NO se puede deshacer y eliminará todas las actividades registradas para esta fecha.`
+    );
+    
+    if (!confirmacion) {
+        return;
+    }
+    
+    // Mostrar indicador de carga
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            font-size: 18px;
+        ">
+            <div style="text-align: center;">
+                <div style="margin-bottom: 20px;">Eliminando plan...</div>
+                <div style="
+                    width: 50px;
+                    height: 50px;
+                    border: 3px solid rgba(255,255,255,0.3);
+                    border-top: 3px solid white;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto;
+                "></div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loadingDiv);
+    
+    // Realizar petición de eliminación
+    fetch('procesar/eliminar_plan_diario.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            fecha: fecha
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remover indicador de carga
+        document.body.removeChild(loadingDiv);
+        
+        if (data.success) {
+            alert(data.message);
+            
+            // Limpiar el formulario
+            limpiarFormulario();
+            
+            // Redirigir automáticamente al inicio
+            setTimeout(() => {
+                window.location.href = 'inicio.html';
+            }, 1500);
+        } else {
+            alert('Error al eliminar el plan: ' + data.message);
+        }
+    })
+    .catch(error => {
+        // Remover indicador de carga
+        document.body.removeChild(loadingDiv);
+        console.error('Error:', error);
+        alert('Error de conexión al eliminar el plan');
+    });
+}
+
+// Función para limpiar el formulario
+function limpiarFormulario() {
+    // Limpiar campos de fecha e inspector
+    document.getElementById('fecha').value = '';
+    document.getElementById('dia').value = '';
+    document.getElementById('inspector').value = '';
+    
+    // Limpiar todas las filas de actividades
+    for (let i = 1; i <= 7; i++) {
+        // Limpiar dirección
+        const direccionField = document.querySelector(`textarea[name="direccion${i}"]`);
+        if (direccionField) direccionField.value = '';
+        
+        // Limpiar tipo
+        const tipoField = document.querySelector(`textarea[name="tipo${i}"]`);
+        if (tipoField) tipoField.value = '';
+        
+        // Limpiar personal
+        for (let j = 1; j <= 4; j++) {
+            const personalField = document.querySelector(`input[name="personal${i}_${j}"]`);
+            if (personalField) personalField.value = '';
+        }
+        
+        // Limpiar observaciones
+        const observacionesField = document.querySelector(`textarea[name="observaciones${i}"]`);
+        if (observacionesField) observacionesField.value = '';
+    }
+    
+    // Limpiar botones de orden de trabajo
+    const contenedorBotones = document.getElementById('botonesOrdenTrabajo');
+    if (contenedorBotones) {
+        contenedorBotones.innerHTML = '';
+    }
+}
+</script>
+</body>
+</html>

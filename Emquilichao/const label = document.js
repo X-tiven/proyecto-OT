@@ -1,0 +1,1 @@
+const label = document.querySelector(`label[for="${checkbox.id}"]`);
