@@ -4,14 +4,6 @@ header('Access-Control-Allow-Origin: *');
 
 require_once '../config/db_config.php';
 
-session_start();
-
-// Verificar si el usuario está logueado
-if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
-    exit;
-}
-
 try {
     $db = new DatabaseConfig();
     $conn = $db->connect();

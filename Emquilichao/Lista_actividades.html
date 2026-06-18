@@ -310,12 +310,6 @@
             <div class="user-triangle" id="userTriangle">▼</div>
         </div>
         
-        <div class="logout-section" id="logoutSection" style="display: none;">
-            <button class="logout-btn-simple" onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
-        </div>
-        
         <ul class="sidebar-menu">
             <li>
                 <a href="inicio.html" style="color: white; text-decoration: none; display: block;">Inicio</a>
@@ -365,20 +359,6 @@
     </div>
 
     <script>
-        // Función para verificar sesión
-        function verificarSesion() {
-            fetch('procesar/verificar_sesion.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.autenticado) {
-                        window.location.href = 'index.html';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al verificar sesión:', error);
-                    window.location.href = 'index.html';
-                });
-        }
 
         // Función para cerrar sesión
         function cerrarSesion() {

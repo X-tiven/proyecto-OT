@@ -756,27 +756,6 @@
                 console.log('👥 Trabajadores establecidos:', trabajadoresDecodificados);
             }
             
-            // Verificar sesión y cargar nombre de usuario
-            fetch('procesar/verificar_sesion.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (!data.autenticado) {
-                        window.location.href = 'index.html';
-                    } else {
-                        document.getElementById('nombreUsuario').textContent = data.nombre;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    if (error.message === 'No autenticado') {
-                        window.location.href = 'index.html';
-                    }
-                });
         });
 
         // Funcionalidad de menús desplegables

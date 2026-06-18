@@ -2,16 +2,8 @@
 header('Content-Type: application/json');
 require_once '../config/db_config.php';
 
-session_start();
-
-// Verificar si el usuario está logueado
-if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
-    exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
+   
     $actividad = $input['actividad'] ?? null;
     
     if (!$actividad) {

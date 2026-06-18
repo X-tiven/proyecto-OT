@@ -198,32 +198,6 @@
     </div>
 </body>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    fetch('procesar/verificar_sesion.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (!data.autenticado) {
-                window.location.href = 'index.html';
-            } else {
-                // Mostrar solo el nombre del usuario
-                document.getElementById('nombreUsuario').textContent = data.nombre;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Solo redirigir si hay un error de autenticación, no por errores de red
-            if (error.message === 'No autenticado') {
-                window.location.href = 'index.html';
-            }
-        });
-    cargarAnos();
-});
-
 
 document.querySelectorAll('.menu-item').forEach(function(item) {
     item.addEventListener('click', function() {
